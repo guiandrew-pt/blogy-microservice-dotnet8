@@ -292,27 +292,6 @@
       ]
     }
 
-    Setup Instructions:
-      1. Install YARP via NuGet:
-        dotnet add package Yarp.ReverseProxy
-
-      2. Configure YARP in the Program.cs:
-
-        using Yarp.ReverseProxy;
-
-        var builder = WebApplication.CreateBuilder(args);
-
-        // Add YARP services
-        builder.Services.AddReverseProxy()
-            .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
-
-        var app = builder.Build();
-
-        app.MapReverseProxy();
-        app.Run();
-
-      3. Test the Gateway API by starting the UserService and PostService on their respective ports.
-
 ##### 3. Gateway Configuration:
 
     • The Gateway is built using YARP and is configured through the appsettings.json file. Below is an example configuration:
@@ -353,6 +332,27 @@
         }
       }
     }
+
+    Setup Instructions:
+      1. Install YARP via NuGet:
+        dotnet add package Yarp.ReverseProxy
+
+      2. Configure YARP in the Program.cs:
+
+        using Yarp.ReverseProxy;
+
+        var builder = WebApplication.CreateBuilder(args);
+
+        // Add YARP services
+        builder.Services.AddReverseProxy()
+            .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+
+        var app = builder.Build();
+
+        app.MapReverseProxy();
+        app.Run();
+
+      3. Test the Gateway API by starting the UserService and PostService on their respective ports.
 
 ##### 4. Environment Configuration:
 
