@@ -269,27 +269,48 @@
     • Create a MongoDB(PostService) database and the necessary table:
 
     {
-      "_id": "ObjectId",
-      "Title": "string",
-      "Content": "string",
-      "ThumbnailUrl": "string", // Optional
-      "DateCreated": "ISODate",
-      "DateUpdated": "ISODate",
-      "Published": "boolean",
-      "Tags": [
+      "_id": "ObjectId",                      // MongoDB ObjectId for the post
+      "Title": "string",                      // Required: max 30 characters
+      "Content": "string",                    // Required
+      "ThumbnailUrl": "string",               // Optional: URL to the thumbnail image
+      "DateCreated": "ISODate",               // Required: creation date
+      "DateUpdated": "ISODate",               // Required: last update date
+      "Published": true,                      // Required: publication status (true/false)
+
+      "Comment": [                           // One-to-Many Relationship: Comments on the post
         {
-          "_id": "ObjectId",
-          "Name": "string"
+          "_id": "ObjectId",                  // MongoDB ObjectId for the comment
+          "Content": "string",                // Required: content of the comment
+          "PostId": "ObjectId",               // Reference to the related Post
+          "DateCreated": "ISODate",           // Required: creation date of the comment
+          "UserId": 1,                        // Required: MySQL User.Id (foreign key reference)
+          "LikeCount": 10,                    // Tracks the number of likes for the comment
+          "IsEdited": false                   // Tracks if the comment was edited
         }
       ],
-      "Comments": [
-        {
-          "_id": "ObjectId",
-          "Content": "string",
-          "UserId": "int", // References User.Id from MySQL
-          "DateCreated": "ISODate"
-        }
-      ]
+
+      "TagIds": [                             // Many-to-Many Relationship with Tags (via Tag IDs)
+        "ObjectId",                           // MongoDB ObjectId for the tag
+        "ObjectId"                            // MongoDB ObjectId of another related tag
+      ],
+
+      "UserId": 1,                            // Required: MySQL User.Id (foreign key reference for the post author)
+      "ViewCount": 100,                       // Tracks how many times the post was viewed
+      "LikeCount": 25
+    }
+
+    {
+      "_id": "ObjectId",                  // MongoDB ObjectId for the tag
+      "Name": "string",                   // Tag name: max 30 characters
+      "PostIds": [                        // Tracks which posts are using this tag
+        "ObjectId",                       // MongoDB ObjectId of the related post
+        "ObjectId"                        // MongoDB ObjectId of another related post
+      ],
+
+      "UsageCount": 5,                    // Tracks how often the tag is used
+      "CreatedDate": "ISODate",           // When the tag was created
+      "LastUsedDate": "ISODate",          // When the tag was last used
+      "Description": "string"             // Short description of the tag
     }
 
 ##### 3. Gateway Configuration:
