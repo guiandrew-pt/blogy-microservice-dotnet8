@@ -266,7 +266,7 @@
         FOREIGN KEY (UserId) REFERENCES Users(Id) ON DELETE CASCADE
     );
 
-    • Create a MongoDB(PostService) database and the necessary table:
+    • Create a MongoDB(PostService) database and the necessary tables:
 
     {
       "_id": "ObjectId",                      // MongoDB ObjectId for the post
