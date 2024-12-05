@@ -247,71 +247,75 @@
 
     • Create a MySQL(UserService) database and the necessary tables:
 
-    CREATE TABLE Users (
-        Id INT AUTO_INCREMENT PRIMARY KEY,
-        Username VARCHAR(50) NOT NULL,
-        Email VARCHAR(100) NOT NULL UNIQUE,
-        PasswordHash VARCHAR(50) NOT NULL,
-        FirstName VARCHAR(50) NOT NULL,
-        LastName VARCHAR(50) NOT NULL,
-        ProfilePictureUrl VARCHAR(255), -- Optional
-        DateCreated DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-    );
+      CREATE TABLE Users (
+          Id INT AUTO_INCREMENT PRIMARY KEY,
+          Username VARCHAR(50) NOT NULL,
+          Email VARCHAR(100) NOT NULL UNIQUE,
+          PasswordHash VARCHAR(50) NOT NULL,
+          FirstName VARCHAR(50) NOT NULL,
+          LastName VARCHAR(50) NOT NULL,
+          ProfilePictureUrl VARCHAR(255), -- Optional
+          DateCreated DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
 
-    CREATE TABLE UserProfile (
-        UserId INT PRIMARY KEY, -- Foreign Key to User.Id
-        Bio TEXT,
-        WebsiteUrl VARCHAR(255),
-        SocialLinks JSON,       -- Key-value pairs for social links
-        FOREIGN KEY (UserId) REFERENCES Users(Id) ON DELETE CASCADE
-    );
+      CREATE TABLE UserProfile (
+          UserId INT PRIMARY KEY, -- Foreign Key to User.Id
+          Bio TEXT,
+          WebsiteUrl VARCHAR(255),
+          SocialLinks JSON,       -- Key-value pairs for social links
+          FOREIGN KEY (UserId) REFERENCES Users(Id) ON DELETE CASCADE
+      );
+
+    • Create an index on MySQL to make fast performance search:
+
+      CREATE INDEX idx_username ON Users (Username);
 
     • Create a MongoDB(PostService) database and the necessary tables:
 
-    {
-      "_id": "ObjectId",                      // MongoDB ObjectId for the post
-      "Title": "string",                      // Required: max 30 characters
-      "Content": "string",                    // Required
-      "ThumbnailUrl": "string",               // Optional: URL to the thumbnail image
-      "DateCreated": "ISODate",               // Required: creation date
-      "DateUpdated": "ISODate",               // Required: last update date
-      "Published": true,                      // Required: publication status (true/false)
+      {
+        "_id": "ObjectId",                      // MongoDB ObjectId for the post
+        "Title": "string",                      // Required: max 30 characters
+        "Content": "string",                    // Required
+        "ThumbnailUrl": "string",               // Optional: URL to the thumbnail image
+        "DateCreated": "ISODate",               // Required: creation date
+        "DateUpdated": "ISODate",               // Required: last update date
+        "Published": true,                      // Required: publication status (true/false)
 
-      "Comment": [                           // One-to-Many Relationship: Comments on the post
-        {
-          "_id": "ObjectId",                  // MongoDB ObjectId for the comment
-          "Content": "string",                // Required: content of the comment
-          "PostId": "ObjectId",               // Reference to the related Post
-          "DateCreated": "ISODate",           // Required: creation date of the comment
-          "UserId": 1,                        // Required: MySQL User.Id (foreign key reference)
-          "LikeCount": 10,                    // Tracks the number of likes for the comment
-          "IsEdited": false                   // Tracks if the comment was edited
-        }
-      ],
+        "Comment": [                           // One-to-Many Relationship: Comments on the post
+          {
+            "_id": "ObjectId",                  // MongoDB ObjectId for the comment
+            "Content": "string",                // Required: content of the comment
+            "PostId": "ObjectId",               // Reference to the related Post
+            "DateCreated": "ISODate",           // Required: creation date of the comment
+            "UserId": 1,                        // Required: MySQL User.Id (foreign key reference)
+            "LikeCount": 10,                    // Tracks the number of likes for the comment
+            "IsEdited": false                   // Tracks if the comment was edited
+          }
+        ],
 
-      "TagIds": [                             // Many-to-Many Relationship with Tags (via Tag IDs)
-        "ObjectId",                           // MongoDB ObjectId for the tag
-        "ObjectId"                            // MongoDB ObjectId of another related tag
-      ],
+        "TagIds": [                             // Many-to-Many Relationship with Tags (via Tag IDs)
+          "ObjectId",                           // MongoDB ObjectId for the tag
+          "ObjectId"                            // MongoDB ObjectId of another related tag
+        ],
 
-      "UserId": 1,                            // Required: MySQL User.Id (foreign key reference for the post author)
-      "ViewCount": 100,                       // Tracks how many times the post was viewed
-      "LikeCount": 25
-    }
+        "UserId": 1,                            // Required: MySQL User.Id (foreign key reference for the post author)
+        "ViewCount": 100,                       // Tracks how many times the post was viewed
+        "LikeCount": 25
+      }
 
-    {
-      "_id": "ObjectId",                  // MongoDB ObjectId for the tag
-      "Name": "string",                   // Tag name: max 30 characters
-      "PostIds": [                        // Tracks which posts are using this tag
-        "ObjectId",                       // MongoDB ObjectId of the related post
-        "ObjectId"                        // MongoDB ObjectId of another related post
-      ],
+      {
+        "_id": "ObjectId",                  // MongoDB ObjectId for the tag
+        "Name": "string",                   // Tag name: max 30 characters
+        "PostIds": [                        // Tracks which posts are using this tag
+          "ObjectId",                       // MongoDB ObjectId of the related post
+          "ObjectId"                        // MongoDB ObjectId of another related post
+        ],
 
-      "UsageCount": 5,                    // Tracks how often the tag is used
-      "CreatedDate": "ISODate",           // When the tag was created
-      "LastUsedDate": "ISODate",          // When the tag was last used
-      "Description": "string"             // Short description of the tag
-    }
+        "UsageCount": 5,                    // Tracks how often the tag is used
+        "CreatedDate": "ISODate",           // When the tag was created
+        "LastUsedDate": "ISODate",          // When the tag was last used
+        "Description": "string"             // Short description of the tag
+      }
 
 ##### 3. Gateway Configuration:
 
